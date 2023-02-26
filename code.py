@@ -6,17 +6,13 @@ if __name__ == "__main__":
 
  vaisseau_x = 60
  vaisseau_y = 60
-
-
+ boss_vies = 10
  vies = 4
 
-
  tirs_liste = []
-
-
  ennemis_liste = []
-
  explosions_liste = []
+ boss_liste =[]
 
 
  def vaisseau_deplacement(x, y):
@@ -55,23 +51,21 @@ if __name__ == "__main__":
 
 
  def ennemis_creation(ennemis_liste):
+  t2 = time.time()
 
-
-  # un ennemi par seconde
-  if (pyxel.frame_count % random.randint(40, 60) == 0):
+  if (pyxel.frame_count % random.randint(40, 60) == 0) and t2-t1 <= 60:
    ennemis_liste.append([random.randint(0, 120), 0])
   return ennemis_liste
 
-
  def ennemis_deplacement(ennemis_liste):
-
-
   for ennemi in ennemis_liste:
    ennemi[1] += 1
    if ennemi[1] > 128:
     ennemis_liste.remove(ennemi)
   return ennemis_liste
 
+ def boss_creation(boss_liste):
+     pass
 
  def vaisseau_suppression(vies):
 
@@ -80,7 +74,6 @@ if __name__ == "__main__":
     1] + 8 >= vaisseau_y:
     ennemis_liste.remove(ennemi)
     vies -= 1
-    # on ajoute l'explosion
     explosions_creation(vaisseau_x, vaisseau_y)
   return vies
 
@@ -92,7 +85,7 @@ if __name__ == "__main__":
     if ennemi[0] <= tir[0] + 1 and ennemi[0] + 8 >= tir[0] and ennemi[1] + 8 >= tir[1]:
      ennemis_liste.remove(ennemi)
      tirs_liste.remove(tir)
-     # on ajoute l'explosion
+
      explosions_creation(ennemi[0], ennemi[1])
 
 
@@ -144,13 +137,19 @@ if __name__ == "__main__":
 
    t2 = time.time()
    for ennemi in ennemis_liste:
-    if t2-t1 >= 60 + random.randint(0,10):
-     pyxel.rect(ennemi[0], ennemi[1], 10, 10, 3)
-    elif t2-t1 >= 120  + random.randint(0,10):
-     pyxel.rect(ennemi[0], ennemi[1], 12, 12, 4)
-    elif t2-t1 >= 180  + random.randint(0,10):
-     pyxel.rect(ennemi[0], ennemi[1], 15, 15, 5)
-    pyxel.rect(ennemi[0], ennemi[1], 8, 8, 8)
+    if t2-t1 < 20:
+     pyxel.rect(ennemi[0], ennemi[1], 8, 8, 6)
+    elif t2-t1 >= 20 and t2-t1 <=40:
+     pyxel.rect(ennemi[0], ennemi[1], 8, 8, 3)
+    elif t2-t1 >= 40 and t2-t1<=60:
+     pyxel.rect(ennemi[0], ennemi[1], 8, 8, 4)
+    elif t2-t1 >= 60:
+        break
+    
+   if t2-t1 >= 60:
+     pyxel.text(80, 5, 'BOSSVIES:' + str(boss_vies), 7)
+   if t2-t1 >= 60:
+      pyxel.rect(60, 20, 20, 20, 6)
 
    for explosion in explosions_liste:
     pyxel.circb(explosion[0] + 4, explosion[1] + 4, 2 * (explosion[2] // 4), 8 + explosion[2] % 3)
@@ -159,5 +158,3 @@ if __name__ == "__main__":
 
    pyxel.text(50, 64, 'GAME OVER', 7)
 
-
- pyxel.run(update, draw)
